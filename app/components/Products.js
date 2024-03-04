@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Card from "./Card";
 import Select from "./CustomSelect";
 
@@ -12,26 +12,37 @@ const sortOptions = [
 
 function Products({ data }) {
   const [sortBy, setSortBy] = useState("popular");
+  const [loading, setLoading] = useState();
 
   const handleSelectChange = (event) => {
     setSortBy(event.target.value);
+    setLoading(true);
   };
 
-  const sortedProducts = () => {
-    if (data)
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(delay);
+  }, [sortBy]);
+
+  const sortedProducts = useMemo(() => {
+    if (data) {
+      const sortedData = [...data];
+
       switch (sortBy) {
         case "popular":
-          return data.sort((a, b) => b.rating.rate - a.rating.rate);
+          return sortedData.sort((a, b) => b.rating.rate - a.rating.rate);
         case "best-selling":
-          return data.sort((a, b) => b.rating.count - a.rating.count);
-        case "price-high-to-low":
-          return data.sort((a, b) => b.price - a.price);
+          return sortedData.sort((a, b) => b.rating.count - a.rating.count); //sold
         case "price-low-to-high":
-          return data.sort((a, b) => a.price - b.price);
+          return sortedData.sort((a, b) => a.price - b.price);
         default:
-          return data;
+          return sortedData;
       }
-  };
+    }
+  }, [data, sortBy]);
 
   return (
     <div>
@@ -41,15 +52,16 @@ function Products({ data }) {
             value={sortBy}
             options={sortOptions}
             onChange={handleSelectChange}
+            isDisabled={data ? false : true}
           />
         </div>
       </div>
 
       <div className="flex flex-wrap gap-[30px] border-t-[1px] border-[rgba(0,0,0,0.5)] pt-10 mt-[2.69rem] ml-[70px]">
-        {sortedProducts() ? (
-          sortedProducts().map((el) => <Card key={el.id} {...el} />)
-        ) : (
+        {loading ? (
           <h1>Loading...</h1>
+        ) : (
+          sortedProducts.map((el) => <Card key={el.id} {...el} />)
         )}
       </div>
     </div>

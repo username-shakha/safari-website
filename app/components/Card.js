@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 function Card({ id, title, price, description, category, image, rating }) {
-  console.log(id, description, category, rating);
+  // console.log(id, description, category, rating);
   return (
     <div className="text-black flex flex-col justify-center items-center bg-white transition duration-300 ease-in-out transform hover:shadow-lg">
       <div className="w-[150px] min-h-[250px] grid place-items-center relative">

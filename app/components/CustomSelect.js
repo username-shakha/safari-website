@@ -1,10 +1,11 @@
-const Select = ({ value, options, onChange }) => {
+const Select = ({ value, options, onChange, isDisabled }) => {
   return (
     <div className="relative">
       <label htmlFor="sort-by" className="sr-only">
         Sort by:
       </label>
       <select
+        disabled={isDisabled}
         id="sort-by"
         className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
         value={value}
